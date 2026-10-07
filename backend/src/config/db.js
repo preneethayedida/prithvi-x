@@ -7,15 +7,15 @@ const connectDB = async () => {
   try {
     mongoose.set('strictQuery', false);
     const conn = await mongoose.connect(env.MONGO_URI, {
-      serverSelectionTimeoutMS: 3000,
-      connectTimeoutMS: 3000
-    });
+    serverSelectionTimeoutMS: 10000,
+    connectTimeoutMS: 10000
+});
     isMongoConnected = true;
     console.log(`[MongoDB] Connected successfully: ${conn.connection.host}/${conn.connection.name}`);
     return conn;
   } catch (error) {
     isMongoConnected = false;
-    console.warn(`[MongoDB Warning] Could not connect to MongoDB at ${env.MONGO_URI}: ${error.message}`);
+    console.warn(`[MongoDB Warning] Could not connect to MongoDB: ${error.message}`);
     console.info(`[MongoDB Fallback] PRITHVI-X will operate in resilient memory-store mode. Data is stored in memory and benchmark seeds are available.`);
     return null;
   }
