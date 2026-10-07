@@ -1,0 +1,29 @@
+{
+  "name": "prithvi-x",
+  "version": "1.0.0",
+  "description": "PRITHVI-X: A Regional Environmental Digital Twin for Environmental Monitoring, Analysis and Visualization",
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:analytics": "cd analytics && uvicorn app.main:app --reload --port 8000",
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"blue,green\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "start": "concurrently -n \"BACKEND,FRONTEND\" -c \"blue,green\" \"cd backend && npm start\" \"cd frontend && npm run preview\"",
+    "test:backend": "cd backend && npm test",
+    "test:analytics": "cd analytics && pytest",
+    "lint": "cd backend && npm run lint && cd ../frontend && npm run lint"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": [
+    "environmental-digital-twin",
+    "climate-intelligence",
+    "geospatial",
+    "analytics",
+    "machine-learning",
+    "prithvi-x"
+  ],
+  "author": "PRITHVI-X Engineering Team",
+  "license": "MIT"
+}

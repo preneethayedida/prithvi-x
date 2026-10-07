@@ -1,0 +1,33 @@
+{
+  "name": "prithvi-x-backend",
+  "version": "1.0.0",
+  "description": "Backend API Gateway and Environmental Data Ingestion Engine for PRITHVI-X",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "seed": "node -e \"require('./src/seeds/seedBenchmarkData').seedAll().then(() => process.exit(0))\"",
+    "test": "node --test tests/api.test.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "mongoose": "^8.9.5",
+    "morgan": "^1.10.0",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "keywords": [
+    "environmental-twin",
+    "api-gateway",
+    "node-express",
+    "mongoose"
+  ],
+  "author": "PRITHVI-X Engineering Team",
+  "license": "MIT"
+}
