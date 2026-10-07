@@ -15,6 +15,7 @@ const connectDB = async () => {
     return conn;
   } catch (error) {
     isMongoConnected = false;
+    console.error('[MongoDB ERROR]', error);
     console.warn(`[MongoDB Warning] Could not connect to MongoDB: ${error.message}`);
     console.info(`[MongoDB Fallback] PRITHVI-X will operate in resilient memory-store mode. Data is stored in memory and benchmark seeds are available.`);
     return null;
