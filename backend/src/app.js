@@ -19,17 +19,18 @@ const app = express();
 
 // Security and Logging Middlewares
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
+  crossOriginResourcePolicy: { policy: 'cross-origin' }
 }));
 
 const allowedOrigins = env.CORS_ORIGIN.split(',').map(s => s.trim());
+
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, curl, server-to-server)
     if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
       return callback(null, true);
     }
-    return callback(null, true); // Dev-friendly permissive for local testing
+
+    return callback(null, true);
   },
   credentials: true
 }));
@@ -40,6 +41,27 @@ app.use(express.urlencoded({ extended: true }));
 if (env.NODE_ENV !== 'test') {
   app.use(morgan('dev'));
 }
+
+/*
+ * Vercel / Serverless MongoDB initialization
+ *
+ * On Vercel, wait for MongoDB before handling API requests.
+ * This prevents /api/health from reading the database state
+ * while the connection is still being established.
+ */
+app.use('/api', async (req, res, next) => {
+  if (!process.env.VERCEL) {
+    return next();
+  }
+
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error('[Vercel MongoDB] Connection error:', error.message);
+    next();
+  }
+});
 
 // Mount APIs
 app.use('/api/health', healthRoutes);
@@ -72,10 +94,10 @@ app.get('/', (req, res) => {
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-// Server startup lifecycle
+// Local server startup lifecycle
 const startServer = async () => {
   try {
-    // 1. Initialize MongoDB connection (with automatic fallback if offline)
+    // 1. Initialize MongoDB connection
     await connectDB();
 
     // 2. Initialize Seed Time-series Audit
@@ -84,7 +106,7 @@ const startServer = async () => {
     // 3. Start Ingestion Scheduler Worker
     schedulerService.start();
 
-    // 4. Listen on configured port
+    // 4. Start local Express server
     const server = app.listen(env.PORT, () => {
       console.log(`=======================================================`);
       console.log(`🌍 PRITHVI-X Environmental Gateway online on port ${env.PORT}`);
@@ -100,7 +122,9 @@ const startServer = async () => {
   }
 };
 
-if (process.env.NODE_ENV !== 'test') {
+// Only start a local HTTP server.
+// Vercel directly uses the exported Express app.
+if (!process.env.VERCEL && process.env.NODE_ENV !== 'test') {
   startServer();
 }
 
