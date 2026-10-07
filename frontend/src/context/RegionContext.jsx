@@ -20,8 +20,11 @@ export const RegionProvider = ({ children }) => {
         EnvironmentalAPI.getHealth()
       ]);
 
-      if (regionsRes.status === 'fulfilled' && regionsRes.value?.data?.length > 0) {
-        const regList = regionsRes.value.data;
+        if (
+         regionsRes.status === 'fulfilled' &&
+        regionsRes.value?.data?.data?.length > 0
+         ) {
+       const regList = regionsRes.value.data.data;
         setRegions(regList);
         // Default to Bhimavaram if present, else first
         const bvm = regList.find(r => r.code === 'IN-AP-BVM') || regList[0];
